@@ -5,15 +5,16 @@ export default async function editUser(
     req: Request,
     res: Response
 ) {
+    let errorCode: number = 400
     try {
         if (req.body.name === '' || req.body.nickname === '' || req.body.email === '') {
-            res.status(400).send({ message: "Please fill in the fields" })
-            return
+            errorCode = 422
+            throw new Error("Please fill in all the fields" )
         }
 
         if (!req.body.name && !req.body.nickname && !req.body.email) {
-            res.status(400).send({ message: "Please choose at least one value to update" })
-            return
+            errorCode = 422
+            throw new Error("Please choose at least one value to update")
         }
         
         await updateUser(
@@ -28,7 +29,7 @@ export default async function editUser(
         })
 
     } catch (error: any) {
-        res.status(400).send({
+        res.status(errorCode).send({
             message: error.message || error.sqlMessage
         })
     }

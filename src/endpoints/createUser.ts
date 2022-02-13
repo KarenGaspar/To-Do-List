@@ -6,13 +6,14 @@ export default async function createUser(
     req: Request,
     res: Response
 ) {
+    let errorCode: number = 400
     try {
         if (
             !req.body.name || !req.body.nickname || !req.body.email
         ) {
-            res.status(400).send('Please fill in the fields.')
+            errorCode = 422
+            throw new Error('Please fill in all the fields.')
 
-            return
         }
 
         const id = Date.now().toString()
@@ -25,7 +26,7 @@ export default async function createUser(
         )
         res.status(201).send('User created successfuly!')
     } catch (error: any) {
-        res.status(400).send({
+        res.status(errorCode).send({
             message: error.message || error.sqlMessage
         })
     }

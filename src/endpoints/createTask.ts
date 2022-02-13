@@ -6,19 +6,16 @@ export default async function createTask(
     req: Request,
     res: Response
 ) {
+    let errorCode:number = 400
     try {
         if (!req.body.title || !req.body.description || !req.body.limitDate || !req.body.creatorUserId) {
-            res.status(400).send('Please fill in the fields.')
-
-            return
+            throw new Error ('Please fill in all the fields.')
         }
 
         const dateDiff: number = moment(req.body.limitDate, 'DD/MM/YYYY').unix() - moment().unix()
 
         if (dateDiff <= 0) {
-            res.status(400).send('"dateDiff" must be a future date')
-
-            return
+            throw new Error ('"dateDiff" must be a future date')
         }
 
         const id = Date.now().toString()
@@ -30,14 +27,13 @@ export default async function createTask(
             moment(req.body.limitDate, 'DD/MM/YYYY').format('YYYY/MM/DD'),
             req.body.creatorUserId
         )
-
         res.status(201).send({
             message: "Task created successfuly",
             id
         })
 
     } catch (error: any) {
-        res.status(400).send({
+        res.status(errorCode).send({
             message: error.message || error.sqlMessage
         })
     }

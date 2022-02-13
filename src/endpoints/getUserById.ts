@@ -5,14 +5,13 @@ export default async function getUserById(
     req: Request,
     res: Response
 ) {
+    let errorCode: number = 400
     try {
         const user = await selectUserById(req.params.id)
         
         if(!user){
-            res.status(404).send({
-                message: "User not found!"
-            })
-            return
+            errorCode = 404
+            throw new Error("User not found!")
         }
 
         res.status(200).send({
@@ -21,7 +20,7 @@ export default async function getUserById(
             nickname: user.nickname
         })
     } catch (error: any) {
-        res.status(400).send({
+        res.status(errorCode).send({
             message: error.message || error.sqlMessage
         })
     }

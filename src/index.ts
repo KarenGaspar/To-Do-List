@@ -25,13 +25,15 @@ app.use(express.json())
 
 app.put('/user', createUser)
 
+app.put('/task', createTask)
+
 app.get('/user/:id', getUserById)
+
+app.get('/task/:id', getTaskById)
 
 app.post('/user/edit/:id', editUser)
 
-app.put('/task', createTask)
 
-app.get('/task/:id', getTaskById)
 
 
 app.listen(3003, () => {

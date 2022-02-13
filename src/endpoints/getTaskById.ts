@@ -6,15 +6,14 @@ export default async function getTaskById(
     req: Request,
     res: Response
 ) {
+    let errorCode: number = 400
     try {
 
         const result = await selectTaskById(req.params.id)
 
         if (!result) {
-            res.status(404).send({
-                message: "Task not found"
-            })
-            return
+            errorCode = 404
+            throw new Error("Task not found")
         }
 
         res.status(200).send({
@@ -28,7 +27,7 @@ export default async function getTaskById(
         })
 
     } catch (error: any) {
-        res.status(400).send({
+        res.status(errorCode).send({
             message: error.message || error.sqlMessage
         })
     }
